@@ -1,0 +1,1154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Telephoning: Playing for Time</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --hm-red: #D0021B;
+    --ink: #1a1a1a;
+    --ink-soft: #4a4a4a;
+    --ink-muted: #8a8a8a;
+    --paper: #f9f7f4;
+    --paper-warm: #f2ede6;
+    --rule: #e0d8ce;
+    --correct: #1a6b3c;
+    --correct-bg: #e8f5ed;
+    --wrong: #c0320a;
+    --wrong-bg: #fdeee9;
+    --accent: #2d5fa6;
+    --accent-bg: #eaf0fb;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--paper);
+    font-family: 'DM Sans', sans-serif;
+    color: var(--ink);
+    min-height: 100vh;
+    padding: 0 0 60px;
+  }
+
+  /* ── HEADER ── */
+  .header {
+    background: var(--ink);
+    color: white;
+    padding: 28px 48px 24px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 24px;
+  }
+
+  .hm-logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 32px;
+    letter-spacing: -1px;
+    line-height: 1;
+    color: white;
+  }
+
+  .hm-logo span {
+    display: inline-block;
+    width: 10px;
+    height: 10px;
+    background: var(--hm-red);
+    border-radius: 50%;
+    margin-left: 2px;
+    vertical-align: top;
+    margin-top: 4px;
+  }
+
+  .header-meta {
+    text-align: right;
+  }
+
+  .header-course {
+    font-size: 11px;
+    font-weight: 300;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-bottom: 4px;
+  }
+
+  .header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    font-weight: 400;
+    color: white;
+    letter-spacing: -0.3px;
+  }
+
+  /* ── MAIN LAYOUT ── */
+  .page {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 48px 0;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--hm-red);
+    margin-bottom: 10px;
+  }
+
+  /* ── INTRO ── */
+  .intro {
+    border-left: 3px solid var(--hm-red);
+    padding: 14px 20px;
+    background: white;
+    margin-bottom: 40px;
+  }
+
+  .intro p {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    line-height: 1.6;
+  }
+
+  .intro p strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ── CONTEXT BOX ── */
+  .context-box {
+    background: var(--paper-warm);
+    border: 1px solid var(--rule);
+    border-radius: 6px;
+    padding: 18px 22px;
+    margin-bottom: 40px;
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+  }
+
+  .context-icon {
+    font-size: 20px;
+    line-height: 1;
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+
+  .context-box p {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.65;
+  }
+
+  /* ── PART HEADER ── */
+  .part-header {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .part-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 42px;
+    color: var(--rule);
+    line-height: 1;
+    flex-shrink: 0;
+  }
+
+  .part-instruction {
+    font-size: 15px;
+    font-weight: 400;
+    color: var(--ink-soft);
+    line-height: 1.5;
+  }
+
+  .part-instruction strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  /* ── MATCH SECTION ── */
+  .match-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px 32px;
+    margin-bottom: 12px;
+  }
+
+  .col-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 4px;
+  }
+
+  /* Sentence halves */
+  .stem-list, .ending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .stem-item {
+    background: white;
+    border: 1.5px solid var(--rule);
+    border-radius: 6px;
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 58px;
+  }
+
+  .stem-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--ink-muted);
+    flex-shrink: 0;
+    width: 24px;
+    text-align: center;
+  }
+
+  .stem-text {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.45;
+    flex: 1;
+  }
+
+  .drop-zone {
+    min-width: 56px;
+    min-height: 28px;
+    border-bottom: 2px dashed var(--rule);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.15s;
+    border-radius: 2px;
+    padding: 2px 6px;
+  }
+
+  .drop-zone.drag-over {
+    border-color: var(--accent);
+    background: var(--accent-bg);
+  }
+
+  .drop-zone .placed-chip {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-bg);
+    border-radius: 3px;
+    padding: 2px 8px;
+    cursor: grab;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  /* ending cards */
+  .ending-item {
+    background: white;
+    border: 1.5px solid var(--rule);
+    border-radius: 6px;
+    padding: 13px 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    cursor: grab;
+    transition: border-color 0.15s, box-shadow 0.15s, opacity 0.2s;
+    min-height: 58px;
+    user-select: none;
+  }
+
+  .ending-item:hover {
+    border-color: var(--accent);
+    box-shadow: 0 2px 8px rgba(45,95,166,0.1);
+  }
+
+  .ending-item.dragging {
+    opacity: 0.35;
+    cursor: grabbing;
+  }
+
+  .ending-item.used {
+    opacity: 0.25;
+    pointer-events: none;
+  }
+
+  .ending-letter {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: var(--hm-red);
+    flex-shrink: 0;
+    width: 22px;
+  }
+
+  .ending-text {
+    font-size: 14px;
+    color: var(--ink);
+    line-height: 1.45;
+  }
+
+  /* ── FEEDBACK OVERLAY ON STEMS ── */
+  .stem-item.correct {
+    border-color: var(--correct);
+    background: var(--correct-bg);
+  }
+
+  .stem-item.wrong {
+    border-color: var(--wrong);
+    background: var(--wrong-bg);
+  }
+
+  .stem-item.correct .stem-num { color: var(--correct); }
+  .stem-item.wrong  .stem-num { color: var(--wrong); }
+
+  .feedback-badge {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+    padding: 2px 8px;
+    border-radius: 20px;
+    flex-shrink: 0;
+  }
+
+  .badge-correct {
+    background: var(--correct-bg);
+    color: var(--correct);
+    border: 1px solid var(--correct);
+  }
+
+  .badge-wrong {
+    background: var(--wrong-bg);
+    color: var(--wrong);
+    border: 1px solid var(--wrong);
+  }
+
+  /* ── ANSWERS REVEAL ── */
+  .answer-reveal {
+    font-size: 13px;
+    color: var(--correct);
+    font-weight: 500;
+    margin-top: 4px;
+    display: none;
+  }
+
+  /* ── DIVIDER ── */
+  .divider {
+    border: none;
+    border-top: 1px solid var(--rule);
+    margin: 40px 0;
+  }
+
+  /* ── PART B – UNSCRAMBLE ── */
+  .unscramble-grid {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .unscramble-item {
+    background: white;
+    border: 1.5px solid var(--rule);
+    border-radius: 6px;
+    padding: 16px 18px;
+    display: grid;
+    grid-template-columns: 28px 1fr auto;
+    align-items: start;
+    gap: 12px;
+  }
+
+  .unscrm-num {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--ink-muted);
+    padding-top: 2px;
+  }
+
+  .unscrm-scrambled {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    font-style: italic;
+    margin-bottom: 8px;
+    line-height: 1.45;
+  }
+
+  .unscrm-scrambled span {
+    background: var(--paper-warm);
+    border-radius: 3px;
+    padding: 1px 5px;
+    font-style: normal;
+    font-weight: 500;
+    margin: 0 1px;
+    color: var(--ink);
+    font-size: 13px;
+  }
+
+  .unscrm-input {
+    width: 100%;
+    border: none;
+    border-bottom: 2px solid var(--rule);
+    background: transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 14.5px;
+    color: var(--ink);
+    padding: 4px 0;
+    outline: none;
+    transition: border-color 0.15s;
+  }
+
+  .unscrm-input:focus {
+    border-color: var(--accent);
+  }
+
+  .unscrm-input.correct-input {
+    border-color: var(--correct);
+    color: var(--correct);
+  }
+
+  .unscrm-input.wrong-input {
+    border-color: var(--wrong);
+    color: var(--wrong);
+  }
+
+  .unscrm-check {
+    font-size: 18px;
+    padding-top: 6px;
+    display: none;
+  }
+
+  /* ── PART C – ALSO USEFUL ── */
+  .useful-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-bottom: 8px;
+  }
+
+  .useful-card {
+    background: white;
+    border: 1.5px solid var(--rule);
+    border-radius: 6px;
+    padding: 14px 16px;
+  }
+
+  .useful-card p {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    font-style: italic;
+    line-height: 1.5;
+    margin-bottom: 8px;
+  }
+
+  .useful-card p strong {
+    color: var(--ink);
+    font-style: normal;
+    font-weight: 500;
+  }
+
+  .useful-note {
+    font-size: 11px;
+    color: var(--ink-muted);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  /* ── BUTTONS ── */
+  .actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 36px;
+    flex-wrap: wrap;
+  }
+
+  .btn {
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    padding: 11px 22px;
+    border-radius: 4px;
+    border: 1.5px solid transparent;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+
+  .btn-primary {
+    background: var(--ink);
+    color: white;
+    border-color: var(--ink);
+  }
+
+  .btn-primary:hover {
+    background: #333;
+  }
+
+  .btn-secondary {
+    background: white;
+    color: var(--ink);
+    border-color: var(--rule);
+  }
+
+  .btn-secondary:hover {
+    border-color: var(--ink-muted);
+  }
+
+  .btn-danger {
+    background: white;
+    color: var(--wrong);
+    border-color: #f0c8be;
+  }
+
+  .btn-danger:hover {
+    background: var(--wrong-bg);
+  }
+
+  /* ── SCORE BANNER ── */
+  .score-banner {
+    display: none;
+    background: var(--ink);
+    color: white;
+    border-radius: 6px;
+    padding: 18px 24px;
+    margin-top: 28px;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .score-banner.show { display: flex; }
+
+  .score-number {
+    font-family: 'DM Serif Display', serif;
+    font-size: 36px;
+    line-height: 1;
+  }
+
+  .score-label {
+    font-size: 12px;
+    font-weight: 300;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.55);
+    margin-top: 2px;
+  }
+
+  .score-msg {
+    font-size: 14px;
+    font-weight: 400;
+    color: rgba(255,255,255,0.8);
+    max-width: 400px;
+    line-height: 1.5;
+  }
+
+  .btn-pdf {
+    background: white;
+    color: var(--accent);
+    border-color: #b8ccf0;
+  }
+
+  .btn-pdf:hover {
+    background: var(--accent-bg);
+    border-color: var(--accent);
+  }
+
+  /* ── PRINT / PDF ── */
+  @media print {
+    body { background: white; padding: 0; font-size: 13px; }
+    .header { padding: 18px 32px; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .page { padding: 24px 32px 0; max-width: 100%; }
+    .actions, .context-box { display: none !important; }
+    .score-banner { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .stem-item.correct, .stem-item.wrong { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .unscrm-input.correct-input, .unscrm-input.wrong-input { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .ending-item.used { display: none; }
+    .useful-card { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .part-number { color: #d0d0d0 !important; }
+    .drop-zone { min-width: 40px; border-bottom: 1.5px solid #999; }
+    .unscrm-input { border-bottom: 1.5px solid #999; }
+    .page-footer { margin-top: 24px; }
+    .pdf-only { display: block !important; }
+    .score-banner.show { display: flex !important; }
+  }
+
+  .pdf-only {
+    display: none;
+    font-size: 11px;
+    color: var(--ink-muted);
+    margin-top: 12px;
+    text-align: right;
+  }
+  .page-footer {
+    margin-top: 60px;
+    padding-top: 20px;
+    border-top: 1px solid var(--rule);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .footer-source {
+    font-size: 11px;
+    color: var(--ink-muted);
+  }
+
+  .footer-ws {
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-muted);
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="header">
+  <div class="hm-logo">HM<span></span></div>
+  <div class="header-meta">
+    <div class="header-course">R351 · Intercultural Skills I · Oral Business Communication</div>
+    <div class="header-title">Telephoning: Playing for Time</div>
+  </div>
+</header>
+
+<main class="page">
+
+  <!-- INTRO -->
+  <div style="margin-bottom:10px" class="section-label">Worksheet TE10 · Part B</div>
+  <div class="intro">
+    <p>Sometimes on a phone call you need to <strong>fill the silence</strong> while you look for information. These phrases keep the conversation going and sound professional while you search for what you need.</p>
+  </div>
+
+  <!-- CONTEXT -->
+  <div class="context-box">
+    <div class="context-icon">💡</div>
+    <p>These expressions are used across many telephoning situations: when you need to check a file, find a date in your diary, or confirm a detail before answering. Using them confidently makes you sound natural and in control — even when you're not quite ready to answer yet.</p>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       PART A · MATCH
+  ═══════════════════════════════════════ -->
+  <div class="part-header">
+    <div class="part-number">A</div>
+    <div class="part-instruction">
+      <strong>Drag</strong> the ending on the right to the matching sentence beginning on the left to make a complete phrase.
+    </div>
+  </div>
+
+  <div class="match-grid">
+    <!-- COL LABELS -->
+    <div class="col-label">Sentence beginnings</div>
+    <div class="col-label">Sentence endings</div>
+
+    <!-- STEMS -->
+    <div class="stem-list" id="stemList">
+
+      <div class="stem-item" id="stem-1" data-answer="B">
+        <div class="stem-num">1</div>
+        <div class="stem-text">Right, let me just
+          <div class="drop-zone" id="drop-1" data-stem="1"
+            ondragover="handleDragOver(event)"
+            ondragleave="handleDragLeave(event)"
+            ondrop="handleDrop(event)">
+          </div>
+        </div>
+      </div>
+
+      <div class="stem-item" id="stem-2" data-answer="C">
+        <div class="stem-num">2</div>
+        <div class="stem-text">Hold on just a moment,
+          <div class="drop-zone" id="drop-2" data-stem="2"
+            ondragover="handleDragOver(event)"
+            ondragleave="handleDragLeave(event)"
+            ondrop="handleDrop(event)">
+          </div>
+        </div>
+      </div>
+
+      <div class="stem-item" id="stem-3" data-answer="A">
+        <div class="stem-num">3</div>
+        <div class="stem-text">Sorry to keep you waiting,
+          <div class="drop-zone" id="drop-3" data-stem="3"
+            ondragover="handleDragOver(event)"
+            ondragleave="handleDragLeave(event)"
+            ondrop="handleDrop(event)">
+          </div>
+        </div>
+      </div>
+
+      <div class="stem-item" id="stem-4" data-answer="D">
+        <div class="stem-num">4</div>
+        <div class="stem-text">If you could just
+          <div class="drop-zone" id="drop-4" data-stem="4"
+            ondragover="handleDragOver(event)"
+            ondragleave="handleDragLeave(event)"
+            ondrop="handleDrop(event)">
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ENDINGS -->
+    <div class="ending-list" id="endingList">
+
+      <div class="ending-item" id="ending-A" data-letter="A"
+        draggable="true"
+        ondragstart="handleDragStart(event)"
+        ondragend="handleDragEnd(event)">
+        <div class="ending-letter">A</div>
+        <div class="ending-text">bear with me for a moment.</div>
+      </div>
+
+      <div class="ending-item" id="ending-B" data-letter="B"
+        draggable="true"
+        ondragstart="handleDragStart(event)"
+        ondragend="handleDragEnd(event)">
+        <div class="ending-letter">B</div>
+        <div class="ending-text">see if I can find that for you.</div>
+      </div>
+
+      <div class="ending-item" id="ending-C" data-letter="C"
+        draggable="true"
+        ondragstart="handleDragStart(event)"
+        ondragend="handleDragEnd(event)">
+        <div class="ending-letter">C</div>
+        <div class="ending-text">I'll check that for you.</div>
+      </div>
+
+      <div class="ending-item" id="ending-D" data-letter="D"
+        draggable="true"
+        ondragstart="handleDragStart(event)"
+        ondragend="handleDragEnd(event)">
+        <div class="ending-letter">D</div>
+        <div class="ending-text">hold on one moment, please.</div>
+      </div>
+
+    </div>
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════════════════════════
+       PART B · UNSCRAMBLE
+  ═══════════════════════════════════════ -->
+  <div class="part-header">
+    <div class="part-number">B</div>
+    <div class="part-instruction">
+      <strong>Unscramble</strong> the words to make a complete playing-for-time phrase. Add a comma where you would naturally pause. The first word is given.
+    </div>
+  </div>
+
+  <div class="unscramble-grid" id="unscrambleGrid">
+
+    <div class="unscramble-item">
+      <div class="unscrm-num">5</div>
+      <div>
+        <div class="unscrm-scrambled">
+          Right &nbsp;·&nbsp; <span>see</span> <span>let</span> <span>just</span> <span>me</span>
+        </div>
+        <input class="unscrm-input" id="u5" type="text" placeholder="Type the correct phrase here…"
+          data-answer="Right, let me just see."
+>
+      </div>
+      <div class="unscrm-check" id="chk5"></div>
+    </div>
+
+    <div class="unscramble-item">
+      <div class="unscrm-num">6</div>
+      <div>
+        <div class="unscrm-scrambled">
+          Hold &nbsp;·&nbsp; <span>check</span> <span>on</span> <span>just</span> <span>a</span> <span>moment,</span> <span>I'll</span>
+        </div>
+        <input class="unscrm-input" id="u6" type="text" placeholder="Type the correct phrase here…"
+          data-answer="Hold on just a moment, I'll check."
+ll check"]'>
+      </div>
+      <div class="unscrm-check" id="chk6"></div>
+    </div>
+
+    <div class="unscramble-item">
+      <div class="unscrm-num">7</div>
+      <div>
+        <div class="unscrm-scrambled">
+          Sorry &nbsp;·&nbsp; <span>I'm</span> <span>just</span> <span>looking</span> <span>this</span> <span>about</span> <span>up</span>
+        </div>
+        <input class="unscrm-input" id="u7" type="text" placeholder="Type the correct phrase here…"
+          data-answer="Sorry, I'm just looking this up."
+m just looking this up"]'>
+      </div>
+      <div class="unscrm-check" id="chk7"></div>
+    </div>
+
+    <div class="unscramble-item">
+      <div class="unscrm-num">8</div>
+      <div>
+        <div class="unscrm-scrambled">
+          Bear &nbsp;·&nbsp; <span>moment</span> <span>me</span> <span>for</span> <span>with</span> <span>a</span>
+        </div>
+        <input class="unscrm-input" id="u8" type="text" placeholder="Type the correct phrase here…"
+          data-answer="Bear with me for a moment."
+>
+      </div>
+      <div class="unscrm-check" id="chk8"></div>
+    </div>
+
+    <div class="unscramble-item">
+      <div class="unscrm-num">9</div>
+      <div>
+        <div class="unscrm-scrambled">
+          I'll &nbsp;·&nbsp; <span>you</span> <span>put</span> <span>hold</span> <span>on</span>
+        </div>
+        <input class="unscrm-input" id="u9" type="text" placeholder="Type the correct phrase here…"
+          data-answer="I'll put you on hold."
+ll put you on hold"]'>
+      </div>
+      <div class="unscrm-check" id="chk9"></div>
+    </div>
+
+    <div class="unscramble-item">
+      <div class="unscrm-num">10</div>
+      <div>
+        <div class="unscrm-scrambled">
+          Sorry &nbsp;·&nbsp; <span>you</span> <span>waiting,</span> <span>to</span> <span>keep</span> <span>right</span>
+        </div>
+        <input class="unscrm-input" id="u10" type="text" placeholder="Type the correct phrase here…"
+          data-answer="Sorry to keep you waiting, right."
+>
+      </div>
+      <div class="unscrm-check" id="chk10"></div>
+    </div>
+
+    <div class="unscramble-item">
+      <div class="unscrm-num">11</div>
+      <div>
+        <div class="unscrm-scrambled">
+          Oh &nbsp;·&nbsp; <span>here</span> <span>yes,</span> <span>is</span> <span>it</span>
+        </div>
+        <input class="unscrm-input" id="u11" type="text" placeholder="Type the correct phrase here…"
+          data-answer="Oh yes, here it is."
+>
+      </div>
+      <div class="unscrm-check" id="chk11"></div>
+    </div>
+
+    <div class="unscramble-item">
+      <div class="unscrm-num">12</div>
+      <div>
+        <div class="unscrm-scrambled">
+          Right &nbsp;·&nbsp; <span>are</span> <span>they</span> <span>here</span>
+        </div>
+        <input class="unscrm-input" id="u12" type="text" placeholder="Type the correct phrase here…"
+          data-answer="Right, here they are."
+>
+      </div>
+      <div class="unscrm-check" id="chk12"></div>
+    </div>
+
+  </div>
+
+  <hr class="divider">
+
+  <!-- ═══════════════════════════════════════
+       PART C · ALSO USEFUL
+  ═══════════════════════════════════════ -->
+  <div class="part-header">
+    <div class="part-number">C</div>
+    <div class="part-instruction">
+      <strong>Also useful.</strong> These standalone phrases are complete on their own — no matching required. Read them aloud and practise saying them naturally.
+    </div>
+  </div>
+
+  <div class="useful-grid">
+    <div class="useful-card">
+      <p>"<strong>I'll put you on hold.</strong>"</p>
+      <div class="useful-note">Formal · when transferring</div>
+    </div>
+    <div class="useful-card">
+      <p>"<strong>Sorry, I'm just looking this up.</strong>"</p>
+      <div class="useful-note">Natural · searching a file</div>
+    </div>
+    <div class="useful-card">
+      <p>"<strong>Right, here it is.</strong>"</p>
+      <div class="useful-note">Natural · when you've found it</div>
+    </div>
+    <div class="useful-card">
+      <p>"<strong>Just a second, please.</strong>"</p>
+      <div class="useful-note">Brief · minimal interruption</div>
+    </div>
+    <div class="useful-card">
+      <p>"<strong>Let me pull that up for you.</strong>"</p>
+      <div class="useful-note">Helpful · computer search</div>
+    </div>
+    <div class="useful-card">
+      <p>"<strong>That's a good question — let me check.</strong>"</p>
+      <div class="useful-note">Graceful · buys more time</div>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════════════
+       ACTIONS + SCORE
+  ═══════════════════════════════════════ -->
+  <div class="actions">
+    <button class="btn btn-primary" onclick="checkAll()">Check answers</button>
+    <button class="btn btn-danger" onclick="resetAll()">Reset</button>
+    <button class="btn btn-pdf" onclick="downloadPDF()">⬇ Download results as PDF</button>
+  </div>
+
+  <div class="score-banner" id="scoreBanner">
+    <div>
+      <div class="score-number" id="scoreNum">—</div>
+      <div class="score-label">Your score</div>
+    </div>
+    <div class="score-msg" id="scoreMsg"></div>
+  </div>
+
+  <div class="pdf-only" id="pdfTimestamp"></div>
+
+  <footer class="page-footer">
+    <div class="footer-source">Source: Emmerson, Paul (1999), <em>Business Builder</em>, Macmillan, Modules 2.4 and 2.5 · Prof. Dr. Tilman Schröder</div>
+    <div class="footer-ws">TE10 · Part B</div>
+  </footer>
+
+</main>
+
+<script>
+  // ── STATE ────────────────────────────────
+  let draggedLetter = null;
+  let draggedFrom   = null; // null = from bank, else stem id string
+  const placements  = { 1: null, 2: null, 3: null, 4: null };
+  const correctAnswers = { 1: 'B', 2: 'C', 3: 'A', 4: 'D' };
+
+  // ── DRAG & DROP ──────────────────────────
+  function handleDragStart(e) {
+    const item = e.currentTarget;
+    draggedLetter = item.dataset.letter;
+    draggedFrom   = null;
+    item.classList.add('dragging');
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
+  function handleChipDragStart(e) {
+    draggedLetter = e.currentTarget.dataset.letter;
+    draggedFrom   = e.currentTarget.closest('.drop-zone').dataset.stem;
+    e.currentTarget.style.opacity = '0.3';
+    e.dataTransfer.effectAllowed = 'move';
+  }
+
+  function handleDragEnd(e) {
+    e.currentTarget.classList.remove('dragging');
+    e.currentTarget.style.opacity = '';
+  }
+
+  function handleDragOver(e) {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'move';
+    e.currentTarget.classList.add('drag-over');
+  }
+
+  function handleDragLeave(e) {
+    e.currentTarget.classList.remove('drag-over');
+  }
+
+  function handleDrop(e) {
+    e.preventDefault();
+    const zone   = e.currentTarget;
+    zone.classList.remove('drag-over');
+    const stemId = parseInt(zone.dataset.stem);
+
+    if (!draggedLetter) return;
+
+    // Return whatever is already in this zone to the bank
+    const existing = placements[stemId];
+    if (existing) returnToBank(existing);
+
+    // If dragged from another zone, clear that zone
+    if (draggedFrom) {
+      const oldZone = document.getElementById('drop-' + draggedFrom);
+      if (oldZone) { oldZone.innerHTML = ''; }
+      placements[parseInt(draggedFrom)] = null;
+    } else {
+      // Hide the card in the bank
+      document.getElementById('ending-' + draggedLetter).classList.add('used');
+    }
+
+    // Place chip
+    placements[stemId] = draggedLetter;
+    zone.innerHTML = '<span class="placed-chip" draggable="true"'
+      + ' data-letter="' + draggedLetter + '"'
+      + ' ondragstart="handleChipDragStart(event)"'
+      + ' ondragend="handleDragEnd(event)">' + draggedLetter + '</span>';
+
+    draggedLetter = null;
+    draggedFrom   = null;
+    clearFeedback();
+  }
+
+  function returnToBank(letter) {
+    const el = document.getElementById('ending-' + letter);
+    if (el) el.classList.remove('used');
+  }
+
+  // ── FEEDBACK HELPERS ─────────────────────
+  function clearFeedback() {
+    [1,2,3,4].forEach(function (i) {
+      const stem = document.getElementById('stem-' + i);
+      stem.classList.remove('correct', 'wrong');
+      const badge = stem.querySelector('.feedback-badge');
+      if (badge) badge.remove();
+    });
+    document.getElementById('scoreBanner').classList.remove('show');
+  }
+
+  // ── CHECK ALL ────────────────────────────
+  function checkAll() {
+    let matchScore = 0;
+
+    // Part A
+    [1,2,3,4].forEach(function (i) {
+      const stem = document.getElementById('stem-' + i);
+      stem.classList.remove('correct', 'wrong');
+      const old = stem.querySelector('.feedback-badge');
+      if (old) old.remove();
+
+      const placed = placements[i];
+      if (!placed) return;
+
+      const ok = (placed === correctAnswers[i]);
+      stem.classList.add(ok ? 'correct' : 'wrong');
+
+      const badge = document.createElement('div');
+      badge.className = 'feedback-badge ' + (ok ? 'badge-correct' : 'badge-wrong');
+      badge.textContent = ok ? '\u2713' : '\u2717';
+      stem.appendChild(badge);
+
+      if (ok) matchScore++;
+    });
+
+    // Part B
+    let unscrScore = 0;
+    let unscrTotal = 0;
+    ['u5','u6','u7','u8','u9','u10','u11','u12'].forEach(function (id) {
+      const input = document.getElementById(id);
+      const num   = id.replace('u', '');
+      const chk   = document.getElementById('chk' + num);
+      if (!input.value.trim()) return;
+      unscrTotal++;
+
+      const ans = input.dataset.answer.toLowerCase().replace(/[.,]/g, '').trim();
+      const val = input.value.toLowerCase().replace(/[.,]/g, '').trim();
+      const ok  = (val === ans);
+
+      input.classList.remove('correct-input', 'wrong-input');
+      input.classList.add(ok ? 'correct-input' : 'wrong-input');
+      chk.style.display  = 'block';
+      chk.textContent    = ok ? '\u2713' : '\u2717';
+      chk.style.color    = ok ? 'var(--correct)' : 'var(--wrong)';
+
+      if (ok) unscrScore++;
+    });
+
+    const total = 4 + (unscrTotal || 0);
+    const score = matchScore + unscrScore;
+
+    document.getElementById('scoreNum').textContent = score + ' / ' + total;
+
+    var msg = '';
+    if      (score === total)            msg = 'Every phrase is correct. You are ready for the role-plays!';
+    else if (score >= total * 0.75)      msg = 'Great work — just a couple to review before the role-plays.';
+    else if (score >= total * 0.5)       msg = 'Good effort — check the highlighted phrases and try again.';
+    else                                  msg = 'Keep going — review the phrases and have another try.';
+
+    document.getElementById('scoreMsg').textContent = msg;
+    document.getElementById('scoreBanner').classList.add('show');
+  }
+
+  // ── SHOW ANSWERS ─────────────────────────
+  function showAnswers() {
+    // Part A
+    [1,2,3,4].forEach(function (i) {
+      var ans     = correctAnswers[i];
+      var zone    = document.getElementById('drop-' + i);
+      var stem    = document.getElementById('stem-' + i);
+      var endEl   = document.getElementById('ending-' + ans);
+
+      stem.classList.remove('correct', 'wrong');
+      var old = stem.querySelector('.feedback-badge');
+      if (old) old.remove();
+
+      zone.innerHTML = '<span class="placed-chip" style="background:#e8f5ed;color:#1a6b3c;">' + ans + '</span>';
+      placements[i]  = ans;
+      endEl.classList.add('used');
+    });
+
+    // Part B
+    ['u5','u6','u7','u8','u9','u10','u11','u12'].forEach(function (id) {
+      var input = document.getElementById(id);
+      var num   = id.replace('u', '');
+      var chk   = document.getElementById('chk' + num);
+      input.value = input.dataset.answer;
+      input.classList.remove('wrong-input');
+      input.classList.add('correct-input');
+      chk.style.display = 'block';
+      chk.textContent   = '\u2713';
+      chk.style.color   = 'var(--correct)';
+    });
+  }
+
+  // ── RESET ────────────────────────────────
+  function resetAll() {
+    // Part A
+    [1,2,3,4].forEach(function (i) {
+      placements[i] = null;
+      var zone  = document.getElementById('drop-' + i);
+      var stem  = document.getElementById('stem-' + i);
+      zone.innerHTML = '';
+      stem.classList.remove('correct', 'wrong');
+      var badge = stem.querySelector('.feedback-badge');
+      if (badge) badge.remove();
+    });
+    ['A','B','C','D'].forEach(function (l) {
+      document.getElementById('ending-' + l).classList.remove('used');
+    });
+
+    // Part B
+    ['u5','u6','u7','u8','u9','u10','u11','u12'].forEach(function (id) {
+      var input = document.getElementById(id);
+      var num   = id.replace('u', '');
+      var chk   = document.getElementById('chk' + num);
+      input.value = '';
+      input.classList.remove('correct-input', 'wrong-input');
+      chk.style.display = 'none';
+      chk.textContent   = '';
+    });
+
+    document.getElementById('scoreBanner').classList.remove('show');
+  }
+
+  // ── DOWNLOAD PDF ─────────────────────────
+  function downloadPDF() {
+    checkAll();
+    var now   = new Date();
+    var stamp = now.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
+              + ' \u00b7 '
+              + now.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    document.getElementById('pdfTimestamp').textContent =
+      'Printed: ' + stamp + ' \u00b7 R351 Intercultural Skills I';
+    setTimeout(function () { window.print(); }, 120);
+  }
+</script>
+</body>
+</html>
